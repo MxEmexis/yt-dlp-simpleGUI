@@ -1,10 +1,13 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
+import urllib as url
+import urllib.request
 import subprocess
+import os
 
 def download_bin(): # downloads the yt-dlp binary from Github
     try:
-        subprocess.run(['wget', 'https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp'], check=True)
+        url.request.urlretrieve('https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp', "yt-dlp")
         tk.messagebox.showinfo(message="yt-dlp binary has been downloaded.")
     
         # Specify the file  to make executable
