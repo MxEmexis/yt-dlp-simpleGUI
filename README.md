@@ -15,8 +15,6 @@ Windows and Linux, but with "Linux-first" philosophy in mind.
 - urllib3 via `pip install urllib3` (dev) for downloading the yt-dlp binary
 - ffmpeg
 
-In Linux you can download `wget` from the repositories of your distro, FFmpeg should already be installed by default.
-
 ## Installing in Windows
 
 ### FFmpeg
