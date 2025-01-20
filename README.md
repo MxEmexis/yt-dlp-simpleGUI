@@ -20,7 +20,7 @@ In Linux you can download `wget` from the repositories of your distro, FFmpeg sh
 ## Installing in Windows
 
 ### FFmpeg
-You will have to manually put in the same folder of the program folder the following executables:
+You will have to manually put the necessary files in the same folder of the program:
 
 Windows builds of FFmpeg [here](https://ffmpeg.org/download.html)
 
