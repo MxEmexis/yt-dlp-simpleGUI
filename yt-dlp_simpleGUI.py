@@ -36,6 +36,9 @@ def submit_link():
     user_input = entry.get()  # Get the video link from the entry field
     print(f"You entered: {user_input}")
     downloading_webm(user_input)
+    
+#def with_cookies():
+    
 
 def downloading_mp3(video_link):  # Download audio as MP3 (best quality)
     try:
@@ -86,6 +89,9 @@ def about_info():
                            )
     
 
+# GUI INTERFACE
+# _____________
+
 # Main window
 root = tk.Tk()
 root.title("yt-dlp simpleGUI")
@@ -129,6 +135,13 @@ mp4_subs_button.pack(pady=10)
 #
 separator2 = ttk.Separator(root, orient='horizontal')
 separator2.pack(fill='x', padx=10, pady=10)
+
+# Cookies-from-browser
+#cookie_insert_button = tk.Button(root, text"Specify cookies from browser")
+
+#
+#separator3 = ttk.Separator(root, orient='horizontal')
+#separator3.pack(fill='x', padx=10, pady=10)
 
 # about button
 about_button = tk.Button(root, text='about', command=about_info)
