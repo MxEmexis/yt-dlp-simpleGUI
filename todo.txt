@@ -1,6 +1,6 @@
 From v0.1.1 onward:
 
-[ ] Implement button for using cookies from browser
+[X] Implement button for using cookies from browser
 [ ] Implement metadata for downloaded files via atomicparley and mutagen 
 [ ] Simple script for building the program on Windows and Linux
 [ ] Save fliename with a dialog (tkinter.filedialog)

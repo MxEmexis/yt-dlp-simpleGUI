@@ -1,0 +1,17 @@
+
+build/yt-dlp_simpleGUI/Analysis-00.toc
+build/yt-dlp_simpleGUI/base_library.zip
+build/yt-dlp_simpleGUI/EXE-00.toc
+build/yt-dlp_simpleGUI/localpycs/pyimod01_archive.pyc
+build/yt-dlp_simpleGUI/localpycs/pyimod02_importers.pyc
+build/yt-dlp_simpleGUI/localpycs/pyimod03_ctypes.pyc
+build/yt-dlp_simpleGUI/localpycs/struct.pyc
+build/yt-dlp_simpleGUI/PKG-00.toc
+build/yt-dlp_simpleGUI/PYZ-00.pyz
+build/yt-dlp_simpleGUI/PYZ-00.toc
+build/yt-dlp_simpleGUI/warn-yt-dlp_simpleGUI.txt
+build/yt-dlp_simpleGUI/xref-yt-dlp_simpleGUI.html
+build/yt-dlp_simpleGUI/yt-dlp_simpleGUI.pkg
+dist/yt-dlp
+dist/yt-dlp_simpleGUI
+yt-dlp_simpleGUI.spec

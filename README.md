@@ -28,7 +28,12 @@ Windows builds of FFmpeg [here](https://ffmpeg.org/download.html)
 
 Or install it via `chocolatey` or `scoop`.
 
-## Build Instructions
+## About Cookies
+The flag `cookies-from-browser [browser name]` is used to fetch cookies from the specified browser in order to acess restricted content.
+
+**Please note that you may have issues trying to use a browser with multiple profiles. Use a browser with a single profile instead.**
+
+# Build Instructions
 
 Made via **pyinstaller** with `pip install pyinstaller`.
 

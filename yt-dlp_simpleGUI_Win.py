@@ -1,19 +1,38 @@
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import ttk, messagebox, simpledialog
 import urllib as url
 import urllib.request
 import subprocess
 import os
 
-# Windows build, the only real difference from the Linux version is using yt-dlp.exe instead of ./yt-dlp.
+# Windows build, the only real difference from the Linux version is using yt-dlp.exe instead of yt-dlp.exe.
+
+# NOTES
+# ______________
+#
+# Still need to think of a better way to make the cookie check, the current
+# implementation works but looks bad to maintain when more options get included.
+
+# ______________
+
+# VARIABLES
+# ______________
+
+browser_cookie_check = False
+browser_cookies = ""
+
+# MAIN PROCESSES
+# ______________
 
 def download_bin(): # downloads the yt-dlp binary from Github
+    # in this case I don't need to make the file executable like in Linux.
     try:
         url.request.urlretrieve('https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe', "yt-dlp.exe")
         tk.messagebox.showinfo(message="yt-dlp binary has been downloaded.")
         
     except subprocess.CalledProcessError as e:
         print(f"Error downloading yt-dlp: {e}")
+        
 
 def update_run(): # Run the yt-dlp -U command
     try:
@@ -23,6 +42,8 @@ def update_run(): # Run the yt-dlp -U command
     except subprocess.CalledProcessError as e:
         print(f"Error running yt-dlp update: {e}")
         
+# ---
+        
 def clear_entry():  # Function to clear the entry field
     entry.delete(0, tk.END)  
 
@@ -30,10 +51,25 @@ def submit_link():
     user_input = entry.get()  # Get the video link from the entry field
     print(f"You entered: {user_input}")
     downloading_webm(user_input)
-
+    
+def insert_cookies_dialog(): # download with cookies-from-browser flag
+    global browser_cookies, browser_cookie_check
+    browser_input = simpledialog.askstring("Browser from cookies Input","Supported browsers are: brave, chrome, chromium, edge, firefox, opera, safari, vivaldi, whale. You must be logged in on the target website.")
+    blank = ""
+    if browser_input is blank:
+        messagebox.showwarning("Warning", "No input provided!")
+    else:
+        messagebox.showinfo("Information", f"You entered: {browser_input}")
+    browser_cookie_check = True
+    browser_cookies = browser_input
+    print ("Browser set to: ", browser_input)
+    
 def downloading_mp3(video_link):  # Download audio as MP3 (best quality)
     try:
-        subprocess.run(['yt-dlp.exe', '-x', '--audio-format', 'mp3', '--audio-quality', '0', video_link], check=True)
+        if browser_cookie_check == True:
+            subprocess.run(['yt-dlp.exe', '--cookies-from-browser', browser_cookies,'-x', '--audio-format', 'mp3', '--audio-quality', '0', video_link], check=True)
+        else:
+            subprocess.run(['yt-dlp.exe', '-x', '--audio-format', 'mp3', '--audio-quality', '0', video_link], check=True)
         print("Downloading audio (MP3)")
         print("Download done!")
         tk.messagebox.showinfo(message="MP3 download done!")
@@ -44,7 +80,10 @@ def downloading_mp3(video_link):  # Download audio as MP3 (best quality)
 
 def downloading_webm(video_link):  # Standard download (WebM)
     try:
-        subprocess.run(['yt-dlp.exe', video_link], check=True)
+        if browser_cookie_check == True:
+            subprocess.run(['yt-dlp.exe', '--cookies-from-browser', browser_cookies, video_link], check=True)
+        else:
+            subprocess.run(['yt-dlp.exe', video_link], check=True)
         print("Downloading video (standard WebM)")
         print("Download done!")
         tk.messagebox.showinfo(message="WebM download done!")
@@ -53,7 +92,10 @@ def downloading_webm(video_link):  # Standard download (WebM)
 
 def downloading_mp4(video_link):  # Download as MP4
     try:
-        subprocess.run(['yt-dlp.exe', '-S', 'ext:mp4:m4a', video_link], check=True)
+        if browser_cookie_check == True:
+            subprocess.run(['yt-dlp.exe', '--cookies-from-browser', browser_cookies, '-S', 'ext:mp4:m4a', video_link], check=True)
+        else:
+            subprocess.run(['yt-dlp.exe', '-S', 'ext:mp4:m4a', video_link], check=True)
         print("Downloading video (MP4)")
         print("Download done!")
         tk.messagebox.showinfo(message="MP4 download done!")
@@ -62,7 +104,10 @@ def downloading_mp4(video_link):  # Download as MP4
         
 def downloading_mp4_subs(video_link):  # Download as MP4 + All Subs
     try:
-        subprocess.run(['yt-dlp.exe', '-S', 'ext:mp4:m4a', '--all-subs', video_link], check=True)
+        if browser_cookie_check == True:
+            subprocess.run(['yt-dlp.exe', '--cookies-from-browser', browser_cookies, '-S', 'ext:mp4:m4a', '--all-subs', video_link], check=True)
+        else:
+            subprocess.run(['yt-dlp.exe', '-S', 'ext:mp4:m4a', '--all-subs', video_link], check=True)
         print("Downloading video (MP4 + Subtitles)")
         print("Download done!")
         tk.messagebox.showinfo(message="MP4 + Subtitles download done!")
@@ -75,10 +120,13 @@ def about_info():
                                    ""
                                    "Credits to github.com/yt-dlp \n"
                                    ""
-                                   "Version: 0.1 \n"
+                                   "Version: 0.0.2 \n"
                                    "made by emexis \n"
                            )
     
+
+# GUI INTERFACE
+# _____________
 
 # Main window
 root = tk.Tk()
@@ -123,6 +171,14 @@ mp4_subs_button.pack(pady=10)
 #
 separator2 = ttk.Separator(root, orient='horizontal')
 separator2.pack(fill='x', padx=10, pady=10)
+
+# Cookies-from-browser 
+cookie_insert_button = tk.Button(root, text="Specify cookies from browser (Age Restricted Content)", command = insert_cookies_dialog)
+cookie_insert_button.pack(pady=10)
+
+#
+separator3 = ttk.Separator(root, orient='horizontal')
+separator3.pack(fill='x', padx=10, pady=10)
 
 # about button
 about_button = tk.Button(root, text='about', command=about_info)
