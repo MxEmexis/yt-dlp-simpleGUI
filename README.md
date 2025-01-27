@@ -13,13 +13,14 @@ Windows and Linux, but with "Linux-first" philosophy in mind.
 
 - Tkinter via `pip install tk` (dev)
 - urllib3 via `pip install urllib3` (dev) for downloading the yt-dlp binary
+- mutagen via `pip install mutagen` (dev) for metadata
+- atomicparsley
 - ffmpeg
 
 ## Installing in Windows
-
-### FFmpeg
 You will have to manually put the necessary files in the same folder of the program:
 
+### FFmpeg
 Windows builds of FFmpeg [here](https://ffmpeg.org/download.html)
 
 - ffmpeg.exe
@@ -28,10 +29,18 @@ Windows builds of FFmpeg [here](https://ffmpeg.org/download.html)
 
 Or install it via `chocolatey` or `scoop`.
 
+### AtomicParsley
+Download via the [Github project page](https://github.com/wez/atomicparsley/releases).
+
 ## About Cookies
 The flag `cookies-from-browser [browser name]` is used to fetch cookies from the specified browser in order to acess restricted content.
 
-**Please note that you may have issues trying to use a browser with multiple profiles. Use a browser with a single profile instead.**
+**Please note that you may have issues trying to use a browser with multiple profiles. In this case keep only one browser profile opened at a time.**
+
+## Metadata
+Metadata for audio files (artist name, album, etc) is done using [atomicparsley](https://github.com/wez/atomicparsley) and [mutagen](https://pypi.org/project/mutagen/).
+
+On Linux you can get atomicparsley from your package manager or do the same as Windows (see above).
 
 # Build Instructions
 
