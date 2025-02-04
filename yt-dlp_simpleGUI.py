@@ -363,12 +363,12 @@ save_button.pack(pady=10)
 
 # Save Subtitles button
 var_subs = tk.BooleanVar()
-check_subs = tk.Checkbutton(root, text="Get Subtitles", variable = var_subs ,command=subs)
+check_subs = tk.Checkbutton(root, text="Get Subtitles (Video Only)", variable = var_subs ,command=subs)
 check_subs.pack()
 
 # Save metadata button
 var_metadata = tk.BooleanVar()
-check_metadata = tk.Checkbutton(root, text="Get metadata", variable = var_metadata ,command=get_meta)
+check_metadata = tk.Checkbutton(root, text="Get metadata (Audio Only)", variable = var_metadata ,command=get_meta)
 check_metadata.pack()
 
 # Cookies-from-browser 
