@@ -15,3 +15,4 @@ build/yt-dlp_simpleGUI/yt-dlp_simpleGUI.pkg
 dist/yt-dlp
 dist/yt-dlp_simpleGUI
 yt-dlp_simpleGUI.spec
+yt-dlp
