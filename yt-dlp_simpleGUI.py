@@ -16,6 +16,9 @@ import os
 # now I will need to duplicate the code for both the simple download and the
 # save-to-file option, but the code looks better now
 
+# 07/02/2025
+# Solving a bug with the save-to-file feature, currently it downloads the file in the same folder as the program and creates a empty file on the target directory...bruh
+
 # ______________
 
 # VARIABLES
