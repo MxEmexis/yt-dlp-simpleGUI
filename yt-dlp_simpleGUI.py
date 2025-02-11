@@ -5,6 +5,9 @@ import urllib.request
 import subprocess
 import mutagen
 import os
+import platform
+import shlex
+
 
 # NOTES
 # ______________
@@ -18,248 +21,167 @@ import os
 
 # 07/02/2025
 # Solving a bug with the save-to-file feature, currently it downloads the file in the same folder as the program and creates a empty file on the target directory...bruh
+# I think that it's best to make the user set the variable for the filepath and then make the output to the specified location
+
+# 11/02/2025
+# finally managed to make a better implementation of the download process that solves both issues, neat!
 
 # ______________
 
-# VARIABLES
+# VARIABLES and CHECKS
 # ______________
 
 browser_cookie_check = False
+metadata_check = False
+subs_check = False
+move_to_folder_check = False
+
 browser_cookies = ""
 file_path = ""
 video_link = ""
-metadata_check = False
-subs_check = False
+file_name = ""
+output_folder_pth = ""
 
-# SUBPROCESSES
+ytdlp_bin = ""
 
-    # mp3
-def mp3_process():
-    video_link = entry.get()
-    subprocess.run(['./yt-dlp', '-x', '--audio-format', 'mp3', '--audio-quality', '0', video_link], check=True)
+system = platform.system()
+if system == "Linux":
+    ytdlp_bin = "./yt-dlp"
+elif system == "Windows":
+    ytdlp_bin = "yt-dlp.exe"
+
+download_combo = ""
+
+# SETUP FOR DOWNLOAD PROCESS
+# "COMBO" is what I call the combination of flags, each option is set to a variable that is added to the subprocess.run() in the end
+
+def set_combo():
+    global download_combo, var_media, video_link, browser_cookies, browser_cookie_check, metadata_check, subs_check, move_to_folder_check
     
-def mp3_metadata():
     video_link = entry.get()
-    subprocess.run(['./yt-dlp', '-x', '--embed-metadata', '--embed-thumbnail', '--audio-format', 'mp3', '--audio-quality', '0', video_link], check=True)
+    video_link = (" ")+video_link #fix for the variable not getting a space before the shlex process
     
-def mp3_cookies():
-    video_link = entry.get()
-    subprocess.run(['./yt-dlp', '--cookies-from-browser', browser_cookies, '-x', '--audio-format', 'mp3', '--audio-quality', '0', video_link], check=True)    
+    mp3_flag = " -x --audio-format mp3 --audio-quality 0"
+    flac_flag = " -x --audio-format flac --audio-quality 0"
+    mp4_flag = " -S ext:mp4:m4a"
+
+    metadata_flag = " --embed-metadata --embed-thumbnail"
+    cookies_flag = " --cookies-from-browser browser_cookies"
+    subs_flag = " --all-subs"
+
+    output = " -P "
+    output+= output_folder_pth
+    longname = str(' -o "%(title).200s.%(ext)s"') # fix for downloading files with titles with more than 256 caracthers, in this implementation is better to always set this first no matter what
+
+    download_combo = ytdlp_bin + longname
     
+    try:
+        if var_media.get() == ".mp3":
+            try:
+                if browser_cookie_check == True:
+                    download_combo+= cookies_flag + mp3_flag  + video_link
+                elif metadata_check == True:
+                    download_combo+= metadata_flag + mp3_flag + video_link
+                else:
+                    download_combo+= mp3_flag + video_link
+            except subprocess.CalledProcessError as e:
+                print(f"Error downloading {video_link}: {e}")
 
-    # flac
-def flac_process():
-    video_link = entry.get()
-    subprocess.run(['./yt-dlp', '-x', '--audio-format', 'flac', '--audio-quality', '0', video_link], check=True)
+        elif var_media.get() == ".flac":
+            try:
+                if browser_cookie_check == True:
+                    download_combo+= cookies_flag + flac_flag + video_link
+                elif metadata_check == True:
+                    download_combo+= metadata_flag + flac_flag + video_link
+                else:
+                    download_combo+= flac_flag + video_link
+            except subprocess.CalledProcessError as e:
+                print(f"Error downloading {video_link}: {e}")
+
+        elif var_media.get() == ".mp4":
+            try:
+                if browser_cookie_check == True:
+                    download_combo+= cookies_flag + mp4_flag + video_link
+                elif metadata_check == True:
+                    download_combo+= metadata_flag + mp4_flag + video_link
+                elif subs_check == True:
+                    download_combo+= mp4_flag + subs_flag + video_link
+                else:
+                    download_combo += mp4_flag + video_link
+            except subprocess.CalledProcessError as e:
+                print(f"Error downloading {video_link}: {e}")
+    finally:
+        if move_to_folder_check == True:
+            download_combo+= output
+        print ("Combo done as: ", download_combo)
+
+    args = shlex.split(download_combo)
+    subprocess.Popen(args)
+    p=subprocess.Popen(args)
+    p.wait()
+
+    print("Download done!")
+    tk.messagebox.showinfo(message="Download done!")
     
-def flac_metadata():
-    video_link = entry.get()
-    subprocess.run(['./yt-dlp', '-x', '--embed-metadata', '--embed-thumbnail', '--audio-format', 'flac', '--audio-quality', '0', video_link], check=True)
-    
-def flac_cookies():
-    video_link = entry.get()
-    subprocess.run(['./yt-dlp', '--cookies-from-browser', browser_cookies, '-x', '--audio-format', 'flac', '--audio-quality', '0', video_link], check=True)
-
-
-    # mp4
-def mp4_process():
-    video_link = entry.get()
-    subprocess.run(['./yt-dlp', '-S', 'ext:mp4:m4a', video_link], check=True)
-    
-def mp4_subs_process():
-    video_link = entry.get()
-    subprocess.run(['./yt-dlp', '-S', 'ext:mp4:m4a', '--all-subs' ,video_link], check=True)
-    
-def mp4_cookies_plus_subs():
-    video_link = entry.get()
-    subprocess.run(['./yt-dlp', '--cookies-from-browser', browser_cookies,'-S', 'ext:mp4:m4a', '--all-subs' ,video_link], check=True)
-
-def mp4_cookies():
-    video_link = entry.get()
-    subprocess.run(['./yt-dlp', '--cookies-from-browser', browser_cookies, '-S', 'ext:mp4:m4a', video_link], check=True)
-
-
-    # webm
-def webm_process():
-    video_link = entry.get()
-    subprocess.run(['./yt-dlp', video_link], check=True)
-
-def webm_cookies():
-    video_link = entry.get()
-    subprocess.run(['./yt-dlp', '--cookies-from-browser', browser_cookies, video_link], check=True)
-
-
 # MAIN PROCESSES
 # ______________
 
 # yt-dlp binary manipulation
 
 def download_bin(): # downloads the yt-dlp binary from Github
-    try:
-        url.request.urlretrieve('https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp', "yt-dlp")
-        tk.messagebox.showinfo(message="yt-dlp binary has been downloaded.")
-    
-        # Specify the file  to make executable
-        ytdlp_bin = 'yt-dlp'
+    if system == "Linux":
+        try:
+            url.request.urlretrieve('https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp', "yt-dlp")
+            tk.messagebox.showinfo(message="yt-dlp binary has been downloaded.")
         
         # Make the file executable
-        subprocess.run(['chmod', '+x', ytdlp_bin], check=True)
-        print(f"{ytdlp_bin} has been downloaded.")
-        print(f"{ytdlp_bin} is now executable.")
+            subprocess.run(['chmod', '+x', ytdlp_bin], check=True)
+            print(f"{ytdlp_bin} has been downloaded.")
+            print(f"{ytdlp_bin} is now executable.")
         
-    except subprocess.CalledProcessError as e:
-        print(f"Error downloading yt-dlp: {e}")
+        except subprocess.CalledProcessError as e:
+            print(f"Error downloading yt-dlp: {e}")
+
+    elif system == "Windows":
+        try:
+            url.request.urlretrieve('https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe', "yt-dlp.exe")
+            tk.messagebox.showinfo(message="yt-dlp.exe has been downloaded.")
+        
+        except subprocess.CalledProcessError as e:
+            print(f"Error downloading yt-dlp: {e}")
 
 def update_run(): # Run the yt-dlp -U command
-    try:
-        subprocess.run(['./yt-dlp', '-U'], check=True)
-        print("yt-dlp updated successfully.")
-        tk.messagebox.showinfo(message="yt-dlp is now updated to the latest stable.")
-    except subprocess.CalledProcessError as e:
-        print(f"Error running yt-dlp update: {e}")
-        
-# ---
-
-# Simple Save - this can be used to save the audio/video in the same folder
-# of the program.
-def download():
-    print (var_media.get())
-    if var_media.get() == ".mp3":
+    if system == "Linux":
         try:
-            if browser_cookie_check == True:
-                mp3_cookies()
-            elif metadata_check == True:
-                mp3_metadata()
-            else:
-                mp3_process()
-            print(f"Downloading MP3 to {file_path}")
-            print("Download done!")
-            tk.messagebox.showinfo(message="MP3 download done!")
-
+            subprocess.run(['./yt-dlp', '-U'], check=True)
+            print("yt-dlp updated successfully.")
+            tk.messagebox.showinfo(message="yt-dlp is now updated to the latest stable.")
         except subprocess.CalledProcessError as e:
-            print(f"Error downloading {video_link}: {e}")
-            
-    elif var_media.get() == ".flac":
-            try:
-                if browser_cookie_check == True:
-                    flac_cookies()
-                elif metadata_check == True:
-                    flac_metadata()
-                else:
-                    flac_process()
-                print((f"Downloading FLAC to {file_path}"))
-                print("Download done!")
-                tk.messagebox.showinfo(message="FLAC download done!")
-
-            except subprocess.CalledProcessError as e:
-                print(f"Error downloading {video_link}: {e}")
-        
-    elif var_media.get() == ".mp4":
+            print(f"Error running yt-dlp update: {e}")
+    
+    elif system == "Windows":
         try:
-            if browser_cookie_check == True:
-                mp4_cookies()
-            elif subs_check == True:
-                mp4_subs_process()
-            elif browser_cookie_check and subs_check == True:
-                mp4_cookies_plus_subs()
-            else:
-                mp4_process()
-            print((f"Downloading MP4 to {file_path}"))
-            print("Download done!")
-            tk.messagebox.showinfo(message="MP4 download done!")
+            subprocess.run(['yt-dlp.exe', '-U'], check=True)
+            print("yt-dlp updated successfully.")
+            tk.messagebox.showinfo(message="yt-dlp.exe is now updated to the latest stable.")
         except subprocess.CalledProcessError as e:
-            print(f"Error downloading {video_link}: {e}")
+            print(f"Error running yt-dlp update: {e}")
         
-    elif var_media.get() == ".webm":
-        try:
-            if browser_cookie_check == True:
-                webm_cookies()
-            else:
-                webm_process()
-            print((f"Downloading standard WebM to {file_path}"))
-            print("Download done!")
-            tk.messagebox.showinfo(message="WebM download done!")
-        except subprocess.CalledProcessError as e:
-            print(f"Error downloading {video_link}: {e}")
+# ---        
 
-# ---
+def choose_filename ():
+    global file_name
+    file_name = custom_entry.get()
+    print (file_name)
 
-# Save to file - this can be used to save the audio/video to a specified
-# folder, and also bypass a error when trying to download Twitter videos
-# that have a lot of caracthers on the tweet.
-
-def save_to_file():
-    global file_path, subs_check, browser_cookie_check, mp3_subprocess, mp4_subprocess, webm_subprocess, mp3_cookies, mp4_subs_process, mp4_cookies, webm_cookies
-    if file_path == "":
-        file_path = filedialog.asksaveasfilename(defaultextension=".mp4", filetypes=[("MP3 Audio", "*.mp3"),("FLAC Audio", "*.flac"),("MP4 Video", "*.mp4"), ("WebM", "*.webm"), ("All files", "*.*")])
-        if file_path:  # Check if the user selected a file
-            with open(file_path, 'w') as file:
-                
-                # Determine the default text based on the file extension
-                
-                if file_path.endswith('.mp3'):
-                    try:
-                        if browser_cookie_check == True:
-                            mp3_cookies()
-                        elif metadata_check == True:
-                            mp3_metadata()
-                        else:
-                            mp3_process()
-                        print(f"Downloading MP3 to {file_path}")
-                        print("Download done!")
-                        tk.messagebox.showinfo(message="MP3 download done!")
-        
-                    except subprocess.CalledProcessError as e:
-                        print(f"Error downloading {video_link}: {e}")
-                        
-                elif file_path.endswith('.flac'):
-                    try:
-                        if browser_cookie_check == True:
-                            flac_cookies()
-                        elif metadata_check == True:
-                            flac_metadata()
-                        else:
-                            flac_process()
-                        print((f"Downloading FLAC to {file_path}"))
-                        print("Download done!")
-                        tk.messagebox.showinfo(message="FLAC download done!")
-        
-                    except subprocess.CalledProcessError as e:
-                        print(f"Error downloading {video_link}: {e}")
-                        
-                        
-                elif file_path.endswith('.mp4'):
-                    try:
-                        if browser_cookie_check == True:
-                            mp4_cookies()
-                        elif subs_check == True:
-                            mp4_subs_process()
-                        elif browser_cookie_check and subs_check == True:
-                            mp4_cookies_plus_subs()
-                        else:
-                            mp4_process()
-                        print((f"Downloading MP4 to {file_path}"))
-                        print("Download done!")
-                        tk.messagebox.showinfo(message="MP4 download done!")
-                    except subprocess.CalledProcessError as e:
-                        print(f"Error downloading {video_link}: {e}")
-                
-                elif file_path.endswith('.webm'):
-                    try:
-                        if browser_cookie_check == True:
-                            webm_cookies()
-                        else:
-                            webm_process()
-                        print((f"Downloading standard WebM to {file_path}"))
-                        print("Download done!")
-                        tk.messagebox.showinfo(message="WebM download done!")
-                    except subprocess.CalledProcessError as e:
-                        print(f"Error downloading {video_link}: {e}")
-                
-    else:
-        messagebox.showinfo("Information", "No content to save.")
-        
-# ---
+def choose_path():
+    global output_folder_pth, move_to_folder_check
+    output_folder_pth = filedialog.askdirectory()
+    move_to_folder_check = True
+    if move_to_folder_check == True:
+        print("Move to Folder set to: True ")
+    print ("Folder to download set to:",output_folder_pth)
+    tk.messagebox.showinfo("Information", f"Folder set to: {output_folder_pth}")
 
 # Common use specifications
 
@@ -277,8 +199,11 @@ def get_meta(): # set the flag to insert metadata in the file
 
 # ---
         
-def clear_entry():  # Function to clear the entry field
+def clear_entry():  # Function to clear the entry field and reset the "combo" process
+    global download_combo
     entry.delete(0, tk.END)
+    download_combo = ""
+
 
 def submit_link():
     user_input = entry.get()  # Get the video link from the entry field
@@ -305,7 +230,7 @@ def about_info():
                                    ""
                                    "Credits to github.com/yt-dlp \n"
                                    ""
-                                   "Version: 0.0.3 \n"
+                                   "Version: 0.0.4 \n"
                                    "made by emexis \n"
                            )
     
@@ -335,20 +260,23 @@ separator.pack(fill='x', padx=10, pady=10)
 var_media = tk.StringVar()
 var_media.set("Choose a media format...")
 
-media_options = [".mp3", ".flac", ".mp4", ".webm"]
+media_options = [".mp3", ".flac", ".mp4"]
 menu = tk.OptionMenu(root, var_media, *media_options)
 menu.pack()
 
 # Entry to submit the link
+entry_label = tk.Label(root, text="Insert URL:", fg="grey")
+entry_label.pack(pady=10)
+
 entry = tk.Entry(root, width=30)
 entry.pack(pady=10)
 
 # Main Download Button
-main_download = tk.Button(root, text="Download!", command=download)
+main_download = tk.Button(root, text="Download!", command=set_combo)
 main_download.pack(pady=10)
 
 # Button to clear the entry field
-clear_button = tk.Button(root, text="Clear Entry", command=clear_entry)
+clear_button = tk.Button(root, text="Clear Entry & Reset", command=clear_entry)
 clear_button.pack(pady=10)
 
 #
@@ -360,9 +288,9 @@ separator2.pack(fill='x', padx=10, pady=10)
 label = tk.Label(root, text="Extra Options")
 label.pack()
 
-# Save result to file button
-save_button = tk.Button(root, text="Save file to...", command=save_to_file)
-save_button.pack(pady=10)
+# Specify where to save button dialog
+sav_button = tk.Button(root, text="Specify where to save...", command=choose_path)
+sav_button.pack(pady=10)
 
 # Save Subtitles button
 var_subs = tk.BooleanVar()
