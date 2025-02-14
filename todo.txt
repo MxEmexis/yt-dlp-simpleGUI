@@ -8,10 +8,10 @@ From v0.1.1 onward:
 [X] add message to make clear that subtitles tick is intended for videos
 
 v0.0.4
-[ ] fix bug when downloading to file - replace the current code!
+[X] fix bug when downloading to file - replace the current code!
 [ ] fix the file name not showing in the shell dialogs
-[ ] unify the Linux and Windows code into just one
-[ ] make a option to fix downloading twitter files with big filenames (specify name before downloading)
-[ ] rewrite the subprocesses in a more concise way, 
+[X] unify the Linux and Windows code into just one
+[X] make a option to fix downloading twitter files with big filenames (specify name before downloading)
+[X] rewrite the subprocesses in a more concise way, 
     try to add the specific flags for each option into one variable that holds the main download process,
     and then add to that string when a variable is called
