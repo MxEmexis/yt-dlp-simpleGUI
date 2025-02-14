@@ -54,7 +54,7 @@ For seeing the shell messages, run it via terminal using `./yt-dlp_simpleGUI`
 
 **Windows**
 
-`pyinstaller --onefile yt-dlp_simpleGUI_Win.py`
+`pyinstaller --onefile yt-dlp_simpleGUI.py`
 
 or `pyinstaller --onefile --hide-console hide-early yt-dlp_simpleGUI_Win.py` if you want to hide the command prompt.
 
