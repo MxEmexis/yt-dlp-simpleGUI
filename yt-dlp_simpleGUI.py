@@ -66,7 +66,8 @@ def set_combo():
     mp4_flag = " -S ext:mp4:m4a"
 
     metadata_flag = " --embed-metadata --embed-thumbnail"
-    cookies_flag = " --cookies-from-browser browser_cookies"
+    cookies_flag = " --cookies-from-browser "
+    cookies_flag+= browser_cookies
     subs_flag = " --all-subs"
 
     output = " -P "
