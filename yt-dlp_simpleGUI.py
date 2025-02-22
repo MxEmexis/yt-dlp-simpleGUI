@@ -181,6 +181,15 @@ def choose_path():
     move_to_folder_check = True
     if move_to_folder_check == True:
         print("Move to Folder set to: True ")
+
+    # Split the input into components based on '/' 
+    component_split = output_folder_pth.split('/')
+    # Add quotes around components that contain spaces
+    formatted_components = [f"'{component}'" if ' ' in component else component for component in component_split]
+    # Join the components back together - so that the script finds the correct filepath
+    formatted_path = '/'.join(formatted_components)
+    output_folder_pth = formatted_path
+
     print ("Folder to download set to:",output_folder_pth)
     tk.messagebox.showinfo("Information", f"Folder set to: {output_folder_pth}")
 
