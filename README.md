@@ -1,5 +1,6 @@
 # yt-dlp simpleGUI
-![[banner.png]]
+[[banner.png]]
+
 Simple GUI to interact with the yt-dlp command-line downloader.
 
 ## How it works
