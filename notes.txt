@@ -1,0 +1,22 @@
+NOTES
+______________
+
+Still need to think of a better way to make the cookie check, the current
+implementation works but looks bad to maintain when more options get included. (resolving this in 0.0.3)
+
+27/01/2025
+Now I will need to duplicate the code for both the simple download and the
+save-to-file option, but the code looks better now
+
+07/02/2025
+Solving a bug with the save-to-file feature, currently it downloads the file in the same folder
+as the program and creates a empty file on the target directory...bruh
+
+I think that it's best to make the user set the variable for the filepath and then make the
+output to the specified location.
+
+11/02/2025
+Finally managed to make a better implementation of the download process that solves both issues, neat!
+
+30/04/2025
+Only visual shenanigans and more comment snippets, nothing changed in the code itself for now.

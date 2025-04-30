@@ -8,24 +8,6 @@ import os
 import platform
 import shlex
 
-
-# NOTES
-# ______________
-#
-# Still need to think of a better way to make the cookie check, the current
-# implementation works but looks bad to maintain when more options get included. (resolving this in 0.0.3)
-
-# 27/01/2025
-# now I will need to duplicate the code for both the simple download and the
-# save-to-file option, but the code looks better now
-
-# 07/02/2025
-# Solving a bug with the save-to-file feature, currently it downloads the file in the same folder as the program and creates a empty file on the target directory...bruh
-# I think that it's best to make the user set the variable for the filepath and then make the output to the specified location
-
-# 11/02/2025
-# finally managed to make a better implementation of the download process that solves both issues, neat!
-
 # ______________
 
 # VARIABLES and CHECKS
@@ -44,7 +26,7 @@ output_folder_pth = ""
 
 ytdlp_bin = ""
 
-system = platform.system()
+system = platform.system() # check for OS and change the yt-dlp binary name accordingly
 if system == "Linux":
     ytdlp_bin = "./yt-dlp"
 elif system == "Windows":
@@ -52,8 +34,8 @@ elif system == "Windows":
 
 download_combo = ""
 
-# SETUP FOR DOWNLOAD PROCESS
-# "COMBO" is what I call the combination of flags, each option is set to a variable that is added to the subprocess.run() in the end
+## SETUP FOR DOWNLOAD PROCESS
+# "COMBO" is what I call the combination of flags, each option is set to a variable that is added to the subprocess.run() in the end as a text input
 
 def set_combo():
     global download_combo, var_media, video_link, browser_cookies, browser_cookie_check, metadata_check, subs_check, move_to_folder_check
@@ -76,6 +58,7 @@ def set_combo():
 
     download_combo = ytdlp_bin + longname
     
+    # process for setting the "combo"
     try:
         if var_media.get() == ".mp3":
             try:
@@ -239,9 +222,11 @@ def about_info():
                            message="This is a simple GUI for yt-dlp. \n"
                                    ""
                                    "Credits to github.com/yt-dlp \n"
+                                   "Logo by yt-dlp \n"
                                    ""
-                                   "Version: 0.0.4 \n"
-                                   "made by emexis \n"
+                                   "Version: 0.0.5 \n"
+                                   "made by MxEmexis \n"
+                                   "https://github.com/MxEmexis"
                            )
     
 
@@ -251,20 +236,26 @@ def about_info():
 # Main window
 root = tk.Tk()
 root.title("yt-dlp simpleGUI")
+root.geometry("350x820")
+
+# banner
+img = tk.PhotoImage(file="banner.png")
+show_img = tk.Label(root, image=img)
+show_img.pack(pady=20)
 
 # yt-dlp binary management
 
 # Button to download the yt-dlp binary from Github
-dl_bin = tk.Button (root, text="Download yt-dlp", command=download_bin)
+dl_bin = tk.Button (root, text="Download yt-dlp", command=download_bin, activebackground='#404B56', activeforeground='white')
 dl_bin.pack(pady=10) 
 
 # Button to run the update command
-update_button = tk.Button(root, text="Update yt-dlp", command=update_run)
+update_button = tk.Button(root, text="Update yt-dlp", command=update_run, activebackground='#404B56', activeforeground='white')
 update_button.pack(pady=10)
 
 #
-separator = ttk.Separator(root, orient='horizontal')
-separator.pack(fill='x', padx=10, pady=10)
+separator1 = tk.Frame(root, bg='#7F7F7F', height=2)
+separator1.pack(fill=tk.X, pady=10)
 
 # Drop-down menu to select file format (this saves in the same folder)
 var_media = tk.StringVar()
@@ -272,26 +263,27 @@ var_media.set("Choose a media format...")
 
 media_options = [".mp3", ".flac", ".mp4"]
 menu = tk.OptionMenu(root, var_media, *media_options)
+menu.configure(activebackground='#404B56', activeforeground='white')
 menu.pack()
 
-# Entry to submit the link
-entry_label = tk.Label(root, text="Insert URL:", fg="grey")
+	# Entry to submit the link
+entry_label = tk.Label(root, text="Insert URL:")
 entry_label.pack(pady=10)
 
-entry = tk.Entry(root, width=30)
+entry = tk.Entry(root, width=30, bd=5)
 entry.pack(pady=10)
 
 # Main Download Button
-main_download = tk.Button(root, text="Download!", command=set_combo)
+main_download = tk.Button(root, text="Download!", command=set_combo, bg='#32353B', activebackground='#404B56', fg='white', activeforeground='white')
 main_download.pack(pady=10)
 
 # Button to clear the entry field
-clear_button = tk.Button(root, text="Clear Entry & Reset", command=clear_entry)
+clear_button = tk.Button(root, text="Clear Entry & Reset", command=clear_entry, activebackground='#404B56', activeforeground='white')
 clear_button.pack(pady=10)
 
 #
-separator2 = ttk.Separator(root, orient='horizontal')
-separator2.pack(fill='x', padx=10, pady=10)
+separator2 = tk.Frame(root, bg='#7F7F7F', height=2)
+separator2.pack(fill=tk.X, pady=10)
 
     # extra options
     
@@ -299,30 +291,30 @@ label = tk.Label(root, text="Extra Options")
 label.pack()
 
 # Specify where to save button dialog
-sav_button = tk.Button(root, text="Specify where to save...", command=choose_path)
+sav_button = tk.Button(root, text="Specify where to save...", command=choose_path, activebackground='#404B56', activeforeground='white')
 sav_button.pack(pady=10)
 
 # Save Subtitles button
 var_subs = tk.BooleanVar()
-check_subs = tk.Checkbutton(root, text="Get Subtitles (Video Only)", variable = var_subs ,command=subs)
+check_subs = tk.Checkbutton(root, text="Get Subtitles (Video Only)", variable = var_subs ,command=subs, activebackground='#404B56', activeforeground='white')
 check_subs.pack()
 
 # Save metadata button
 var_metadata = tk.BooleanVar()
-check_metadata = tk.Checkbutton(root, text="Get metadata (Audio Only)", variable = var_metadata ,command=get_meta)
+check_metadata = tk.Checkbutton(root, text="Get metadata (Audio Only)", variable = var_metadata ,command=get_meta, activebackground='#404B56', activeforeground='white')
 check_metadata.pack()
 
 # Cookies-from-browser 
-cookie_insert_button = tk.Button(root, text="Specify cookies from browser (Age Restricted Content)", command = insert_cookies_dialog)
+cookie_insert_button = tk.Button(root, text="Specify cookies from browser... \n (Age Restricted Content)", command = insert_cookies_dialog, activebackground='#404B56', activeforeground='white')
 cookie_insert_button.pack(pady=10)
 
 #
-separator3 = ttk.Separator(root, orient='horizontal')
-separator3.pack(fill='x', padx=10, pady=10)
+separator2 = tk.Frame(root, bg='#7F7F7F', height=2)
+separator2.pack(fill=tk.X, pady=10)
 
 # about button
-about_button = tk.Button(root, text='about', command=about_info)
-about_button.pack(side='right', padx=10)
+about_button = tk.Button(root, text='about', command=about_info, height=1, fg='#999999', activeforeground='#B5B5B5')
+about_button.pack(side='right', padx=5)
 
 # Tkinter event loop
 root.mainloop()
