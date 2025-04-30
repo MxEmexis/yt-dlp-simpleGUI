@@ -1,5 +1,5 @@
 # yt-dlp simpleGUI
-[](banner.png)
+[](https://github.com/MxEmexis/yt-dlp-simpleGUI/blob/main/banner.png)
 
 Simple GUI to interact with the yt-dlp command-line downloader.
 
