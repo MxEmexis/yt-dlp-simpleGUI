@@ -1,5 +1,14 @@
 # yt-dlp simpleGUI
-![](https://github.com/MxEmexis/yt-dlp-simpleGUI/blob/main/banner.png)
+
+```markdown
+__               __            ____    
+\ \       __  __/ /_      ____/ / /___ 
+ \ \     / / / / __/_____/ __  / / __ \
+ / /    / /_/ / /_/_____/ /_/ / / /_/ /
+/_/_____\__, /\__/      \__,_/_/ .___/ 
+ /_____/____/     simple GUI  /_/
+                           
+```
 
 Simple GUI to interact with the yt-dlp command-line downloader.
 
@@ -13,11 +22,11 @@ Windows and Linux, but with "Linux-first" philosophy in mind.
 
 ## Requirements:
 
-- Tkinter via `pip install tk` (dev)
-- urllib3 via `pip install urllib3` (dev) for downloading the yt-dlp binary
-- mutagen via `pip install mutagen` (dev) for metadata
-- atomicparsley
-- ffmpeg
+- Tkinter (dev) for interface (can be installed via pip/pipx)
+- urllib3 (dev) for downloading the yt-dlp binary (can be installed via pip/pipx)
+- mutagen (or mutagenx fork) for metadata (can be installed via pip/pipx)
+- atomicparsley (via distro repo)
+- ffmpeg (via distro repo)
 
 ## Installing in Windows
 You will have to manually put the necessary files in the same folder of the program:

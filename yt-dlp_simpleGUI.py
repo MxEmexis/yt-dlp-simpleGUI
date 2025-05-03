@@ -1,12 +1,11 @@
-import tkinter as tk
-from tkinter import ttk, messagebox, simpledialog, filedialog
-import urllib as url
-import urllib.request
-import subprocess
-import mutagen
-import os
 import platform
 import shlex
+import subprocess
+import tkinter as tk
+import urllib as url
+import urllib.request
+from tkinter import messagebox, simpledialog, filedialog
+import sys, os
 
 # ______________
 
@@ -220,13 +219,15 @@ def insert_cookies_dialog(): # download with cookies-from-browser flag
 def about_info():
     tk.messagebox.showinfo(title='About yt-dlp simpleGUI',
                            message="This is a simple GUI for yt-dlp. \n"
-                                   ""
+                                   "\n"
                                    "Credits to github.com/yt-dlp \n"
-                                   "Logo by yt-dlp \n"
-                                   ""
+                                   "\n"
+                                   "Logo made with\nwww.asciiart.eu/text-to-ascii-art \n"
+                                   "\n"
                                    "Version: 0.0.5 \n"
+                                   "\n"
                                    "made by MxEmexis \n"
-                                   "https://github.com/MxEmexis"
+                                   "github.com/MxEmexis"
                            )
     
 
@@ -239,9 +240,17 @@ root.title("yt-dlp simpleGUI")
 root.geometry("350x820")
 
 # banner
-img = tk.PhotoImage(file="banner.png")
-show_img = tk.Label(root, image=img)
-show_img.pack(pady=20)
+charlogo = r"""
+__               __            ____    
+\ \       __  __/ /_      ____/ / /___ 
+ \ \     / / / / __/_____/ __  / / __ \
+ / /    / /_/ / /_/_____/ /_/ / / /_/ /
+/_/_____\__, /\__/      \__,_/_/ .___/ 
+ /_____/____/     simple GUI  /_/    
+"""
+
+logo = tk.Label(root, text=charlogo, font=('Courier', 10), justify='left')
+logo.pack(pady=2,padx=2)
 
 # yt-dlp binary management
 
