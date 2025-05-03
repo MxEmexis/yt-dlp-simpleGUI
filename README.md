@@ -22,11 +22,11 @@ Windows and Linux, but with "Linux-first" philosophy in mind.
 
 ## Requirements:
 
-- Tkinter (dev) for interface (can be installed via pip/pipx)
-- urllib3 (dev) for downloading the yt-dlp binary (can be installed via pip/pipx)
-- mutagen (or mutagenx fork) for metadata (can be installed via pip/pipx)
-- atomicparsley (via distro repo)
-- ffmpeg (via distro repo)
+- Tkinter (dev) for interface `(can be installed via pip/pipx)`
+- urllib3 (dev) for downloading the yt-dlp binary `(can be installed via pip/pipx)`
+- mutagen (or mutagenx fork) for metadata `(can be installed via pip/pipx or distro repo)`
+- atomicparsley `(via distro repo)`
+- ffmpeg `(via distro repo)`
 
 ## Installing in Windows
 You will have to manually put the necessary files in the same folder of the program:
