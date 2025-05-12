@@ -13,14 +13,11 @@ __               __            ____
 Simple GUI to interact with the yt-dlp command-line downloader.
 
 ## How it works
-This program dowloads the *yt-dlp* binary from [yt-dlp repositories](https://github.com/yt-dlp/yt-dlp) and interacts with it using a simple interface built using Python with `Tkinter` and `urllib3` libraries.
+This program dowloads the *yt-dlp* binary from [yt-dlp repositories](https://github.com/yt-dlp/yt-dlp) and interacts with it using a simple interface built using Python with `Tkinter`.
 
-I will add more features to it later, but at the moment it can download MP3 audio and MP4 video using pre-set flags, and also update the yt-dlp binary.
+It can download MP3, FLAC and MP4 using pre-set flags, and also update the yt-dlp binary.
 
-## Platforms
-Windows and Linux, but with "Linux-first" philosophy in mind.
-
-## Requirements:
+## Required Libraries:
 
 - Tkinter (dev) for interface `(can be installed via pip/pipx)`
 - urllib3 (dev) for downloading the yt-dlp binary `(can be installed via pip/pipx)`
@@ -51,11 +48,11 @@ The flag `cookies-from-browser [browser name]` is used to fetch cookies from the
 ## Metadata
 Metadata for audio files (artist name, album, etc) is done using [atomicparsley](https://github.com/wez/atomicparsley) and [mutagen](https://pypi.org/project/mutagen/).
 
-On Linux you can get atomicparsley from your package manager or do the same as Windows (see above).
+On Linux you can get atomicparsley and mutagen from your package manager, or do the same as Windows (see above).
 
 # Build Instructions
 
-Made via **pyinstaller** with `pip install pyinstaller`.
+You can run it directly from the source (assuming that you have the required libraries) or build a executable with `pyinstaller`, avaliable via `pip`.
 
 **Linux**
 

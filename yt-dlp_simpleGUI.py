@@ -28,8 +28,10 @@ ytdlp_bin = ""
 system = platform.system() # check for OS and change the yt-dlp binary name accordingly
 if system == "Linux":
     ytdlp_bin = "./yt-dlp"
+    print ("System: Linux")
 elif system == "Windows":
     ytdlp_bin = "yt-dlp.exe"
+    print ("System: Windows")
 
 download_combo = ""
 
@@ -44,7 +46,8 @@ def set_combo():
     
     mp3_flag = " -x --audio-format mp3 --audio-quality 0"
     flac_flag = " -x --audio-format flac --audio-quality 0"
-    mp4_flag = " -S ext:mp4:m4a"
+    mp4_flag = " -t mp4"
+    webm_flag = str('')
 
     metadata_flag = " --embed-metadata --embed-thumbnail"
     cookies_flag = " --cookies-from-browser "
@@ -53,9 +56,9 @@ def set_combo():
 
     output = " -P "
     output+= output_folder_pth
-    longname = str(' -o "%(title).200s.%(ext)s"') # fix for downloading files with titles with more than 256 caracthers, in this implementation is better to always set this first no matter what
+    #longname = str(' -o "%(title).200s.%(ext)s"') # fix for downloading files with titles with more than 256 caracthers, in this implementation is better to always set this first no matter what
 
-    download_combo = ytdlp_bin + longname
+    download_combo = ytdlp_bin #+ longname
     
     # process for setting the "combo"
     try:
@@ -91,6 +94,14 @@ def set_combo():
                     download_combo+= mp4_flag + subs_flag + video_link
                 else:
                     download_combo += mp4_flag + video_link
+            except subprocess.CalledProcessError as e:
+                print(f"Error downloading {video_link}: {e}")
+        elif var_media.get() == ".webm":
+            try:
+                if browser_cookie_check == True:
+                    download_combo+= cookies_flag + webm_flag + video_link
+                else:
+                    download_combo+= webm_flag + video_link
             except subprocess.CalledProcessError as e:
                 print(f"Error downloading {video_link}: {e}")
     finally:
@@ -195,6 +206,7 @@ def clear_entry():  # Function to clear the entry field and reset the "combo" pr
     global download_combo
     entry.delete(0, tk.END)
     download_combo = ""
+    print ("Entry field cleared.")
 
 
 def submit_link():
@@ -237,7 +249,7 @@ def about_info():
 # Main window
 root = tk.Tk()
 root.title("yt-dlp simpleGUI")
-root.geometry("350x820")
+root.geometry("350x750")
 
 # banner
 charlogo = r"""
@@ -252,30 +264,33 @@ __               __            ____
 logo = tk.Label(root, text=charlogo, font=('Courier', 10), justify='left')
 logo.pack(pady=2,padx=2)
 
-# yt-dlp binary management
+## yt-dlp binary management
 
 # Button to download the yt-dlp binary from Github
 dl_bin = tk.Button (root, text="Download yt-dlp", command=download_bin, activebackground='#404B56', activeforeground='white')
-dl_bin.pack(pady=10) 
+dl_bin.pack(pady=2) 
 
 # Button to run the update command
 update_button = tk.Button(root, text="Update yt-dlp", command=update_run, activebackground='#404B56', activeforeground='white')
-update_button.pack(pady=10)
+update_button.pack(pady=2)
 
 #
 separator1 = tk.Frame(root, bg='#7F7F7F', height=2)
 separator1.pack(fill=tk.X, pady=10)
 
-# Drop-down menu to select file format (this saves in the same folder)
+media_frame = tk.Frame(root)
+media_frame.pack(pady=5)
+
+## Drop-down menu to select file format (this saves in the same folder)
 var_media = tk.StringVar()
 var_media.set("Choose a media format...")
 
-media_options = [".mp3", ".flac", ".mp4"]
+media_options = [".mp3",".flac", ".webm",".mp4"]
 menu = tk.OptionMenu(root, var_media, *media_options)
 menu.configure(activebackground='#404B56', activeforeground='white')
 menu.pack()
 
-	# Entry to submit the link
+    # Entry to submit the link
 entry_label = tk.Label(root, text="Insert URL:")
 entry_label.pack(pady=10)
 
@@ -284,24 +299,27 @@ entry.pack(pady=10)
 
 # Main Download Button
 main_download = tk.Button(root, text="Download!", command=set_combo, bg='#32353B', activebackground='#404B56', fg='white', activeforeground='white')
-main_download.pack(pady=10)
+main_download.pack(pady=5)
 
 # Button to clear the entry field
 clear_button = tk.Button(root, text="Clear Entry & Reset", command=clear_entry, activebackground='#404B56', activeforeground='white')
-clear_button.pack(pady=10)
+clear_button.pack(pady=5)
 
 #
 separator2 = tk.Frame(root, bg='#7F7F7F', height=2)
 separator2.pack(fill=tk.X, pady=10)
 
-    # extra options
+## extra options
+
+extra_options_frame = tk.Frame(root)
+extra_options_frame.pack(pady=5)
     
 label = tk.Label(root, text="Extra Options")
 label.pack()
 
 # Specify where to save button dialog
 sav_button = tk.Button(root, text="Specify where to save...", command=choose_path, activebackground='#404B56', activeforeground='white')
-sav_button.pack(pady=10)
+sav_button.pack(pady=5)
 
 # Save Subtitles button
 var_subs = tk.BooleanVar()
@@ -319,11 +337,15 @@ cookie_insert_button.pack(pady=10)
 
 #
 separator2 = tk.Frame(root, bg='#7F7F7F', height=2)
-separator2.pack(fill=tk.X, pady=10)
+separator2.pack(fill=tk.X, pady=5)
+
+## about
+about_frame = tk.Frame(root)
+about_frame.pack(pady=2)
 
 # about button
 about_button = tk.Button(root, text='about', command=about_info, height=1, fg='#999999', activeforeground='#B5B5B5')
-about_button.pack(side='right', padx=5)
+about_button.pack(side='right')
 
 # Tkinter event loop
 root.mainloop()
